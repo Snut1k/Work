@@ -1,0 +1,26 @@
+1. Создать Github репозиторий с наименованием "Notes"
+
+(на всякий случай, комманды для гитхаба)
+1.Создает новый репозиторий
+echo "# Work" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin "https://github.com/Snut1k/Work.git"-имя и путь репозитория
+git push -u origin main
+2. Пушит репозиторий в главную ветку
+git remote add origin https://github.com/Snut1k/Work.git
+git branch -M main
+git push -u origin main
+3. Заливает репозиторий на пк  
+git clone https://github.com/Snut1k/Work.git
+4. Создать файл
+комманды в git bash
+cd work " work- название папки под репозиторий" 
+touch test.md - "test.md название файла"
+git add .
+git status
+git commit -m "название коммита"
+git push
+
