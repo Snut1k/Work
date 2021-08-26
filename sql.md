@@ -179,10 +179,10 @@ order by salary desc, first_name
 обновление - update;
 # Добваление
 ## insert into (2.1) 
-## values
-isert- добавляет строкитаблицы;
+## Values
+isert into- добавляет строки таблицы;
 
-orders- имя таблицы ;
+orders - имя таблицы в которую вставляют данные  ;
 
 id , products , sum -поля таблицы
 ~~~
@@ -216,7 +216,8 @@ Update products set name = 'iMac' where id =7;
 ## set (2.4) 
 set - это как и какие мы изменяем поля мы изменяем поля:
 ~~~
-Update users set salary=salary*1.1 where 
+Update users set 
+salary=salary*1.1 where salary < 20000
 ~~~
 
 
@@ -250,8 +251,126 @@ delete from cars
 where country = 'JP' and (power >129 or power < 79)
 ~~~
 
-#
+# 3.Создание таблиц
+boolean в mysql НЕ существует, а пишется tinyint c значениями 0 или 1 
+## Create (3.1)
+Создает таблицу (в даном случае messages )где id и т.д это поля.
 
+ПОСЛЕ ПОСЛЕДНЕГО ПОЛЯ НЕ НУЖНА ЗАПЯТАЯ!
+
+(inset into добавляет данные в таблицу)
+~~~
+Create table messages (
+ id int,
+ subject Varchar(100),
+ message text,
+ add_date Datetime,
+ is_public bool
+ );
+insert into messages (id, subject, message, add_date, is_public)
+ values 
+ (1, 'Первое сообщение','Это мое первое сообщение!', '2016-12-12 14:16:00', true);
+~~~
+~~~
+create table rating (
+ id int,
+ car_id int,
+ user_id int,
+ rating float
+);
+insert into rating ( id,car_id, user_id, rating)
+ values
+ (1,1,1,4.54),
+ (2,1,2,3.34),
+ (3,2,3,4.19),
+ (4,2,11,1.12);
+~~~
+
+## unsigned (3.3) 
+В int храняться числа от -2147483648  до + 2147483647.
+
+Там где мы не используем минусоые значения используем unsigned, чтобы исключить хранение минусовых значений
+
+~~~
+id int unsigned;
+age tinyint unsigned 
+~~~
+Теперь диапозон int будет равен от 0 до 4294967296,а tinyint от 0 до 255
+~~~
+create table films (
+    id INT unsigned,
+    name varchar (100),
+    rating float unsigned,
+    country varchar (2)
+);
+insert into films (id, name, rating, country)
+ Values
+ (1,'Большая буря', 3.45,'RU'),
+ (2,'Игра', 7.5714,'US'),
+ (3,'Война', 10.0,'RU');
+~~~
+## Decimal (3.4)
+~~~
+amount Decimal (10,2)
+~~~
+Где 10 максимальное число знаков в числе, 
+а 2 после запятой. 
+
+Максиальное число в данном случае - 8мь девяток до запятой и две после запятой: 99999999.99
+
+Если вставлять числа после запятой, то происходит округление
+
+## Строковые поля
+~~~
+'\'Хорошее'\' кино\n про упорстово' =
+
+'Хорошее' кино
+
+про упорство
+ ~~~
+## Varchar  (3.5)  
+ Varchar это строковый тип данных в ктором максимальное значение символов 65535 символов.
+Лучше не ставить индекс у varchar больше чем нужно. Например не будет имя человека больше 20 ти символов, а фамилии больше 50. 
+
+## Text (3.6) 
+Text - фиксировынный текстовой тип писать скобки не нужно, выдаст ошибку.
+~~~
+Create table users(
+ id INT unsigned,
+ first_name Varchar (50),
+ last_name Varchar (60),
+ bio text 
+);
+
+insert into users (id, first_name, last_name, bio)
+ Value
+ (1,'Антон','Кулик','С отличием окончил 39 лицей.'),
+ (2,'Сергей','Давыдов',''),
+ (3,'Дмитрий', 'Соколов','Профессиональный программист.');
+ Select * From users
+~~~
+Text - 65535
+Mediumtext - 16777215
+Longtext - 4294967295 Максимальные количества знаков
+## Blob
+Создан для хранения двоичных объектов (изображений, звуков, электронных документов).
+Но лучше не хранить их в бд, а хранить ссылкой на жесткий диск.
+
+
+
+
+
+
+## Datetime 
+ записывается в формате 
+ ~~~
+ '2016-12-12 14:16:00'
+ ~~~
+ ## Float 
+## Инексы и индексирование
+
+## Order by и group  by
+## set, update, values, в чем отличия?
 
 ## Truncate и Delete, различия
 Команда DELETE удаляет записи из таблицы, которые удовлетворяют критерию WHERE.
