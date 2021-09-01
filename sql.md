@@ -227,6 +227,9 @@ update -  преднаначен для изменения полей табли
 ~~~
 Update products set name = 'iMac' where id =7;
 ~~~
+~~~
+Update films set rating = (kinopoisk+imdb)/2
+~~~
 ## set (2.4) 
 set - это как и какие мы изменяем поля мы изменяем поля:
 ~~~
@@ -568,14 +571,44 @@ create index base_query on calendar(city_id,date)
 Drop index number on passports ;
 Drop index series on passports ;
 ~~~
-##  (4.5)
-##  (4.6)
-##  (4.7)
-##  (4.8)
-##  (4.8)
-##  (4.10)
-##  (4.11)
-##  (4.12)
+##  Изменение таблиц
+## alter table (5.1)
+alter table ставится в наяале для выбора таблицы для изменения.
+## add column(5.2)
+Создает столбец
+~~~
+alter table users
+add column birthday date default null,
+add column last_visit datetime not null default current_timestamp,
+add column is_active boolean not null default true,
+add column experience mediumint unsigned not null default 0;
+~~~
+Удаляет столбец (Можно  писать без column)
+~~~
+alter table articles
+ Drop column state ;
+~~~
+## изменение столбцов
+##  modify  (5.3)
+Изменяет поле в до нужного состояния.
+~~~
+modify message Varchar(280) not null
+~~~
+## change (5.4)
+изменяет имя и аттрибуты, в данном случае меняет name на first_name, если ничего не пишем, то ничего не меняется. 
+~~~
+change name first_name Varchar(20) not null default '',
+~~~
+## Изменеие таблицы
+##  rename (5.5)
+ Переименовывает таблицы wp_users в blog_users, wp_posts в blog_posts, wp_comments в blog_comments
+~~~
+Rename table wp_users to blog_users, wp_posts to blog_posts, wp_comments to blog_comments
+~~~
+##  (5.6)
+##  (6.1)
+##  (4.2)
+##  (4.3)
 ##  (4.13)
 
 ## определение остатка
@@ -626,6 +659,8 @@ SHOW CREATE TABLE products;
 +----------+--------------------------------------------------------------------+
 ~~~
 
+## триггеры
+## Округление/усечение данных при изменении поля
 ## Униальные индексы ???
 
 ## Форматы хранения времени
