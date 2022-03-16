@@ -47,6 +47,7 @@ Select * From orders where status in( 'cancelled', 'returned')
 delete from orders 
  where id in (3,4,7);
 ~~~
+Тоесть IN проверяет есть ли значения которе в скобках в таблице
 ## OR (1.3)
 Оператор OR соответствует логическому ИЛИ. В данном случае результатом запроса будут все записи подходящие ИЛИ под одно ИЛИ под другое условие
 ~~~
@@ -188,6 +189,7 @@ order by salary desc, first_name
 обновление - update;
 # Добваление
 ## insert into (2.1) 
+https://stepik.org/lesson/206836/step/7?thread=solutions&unit=180537
 ## Values
 isert into- добавляет строки таблицы;
 
@@ -672,7 +674,7 @@ where match (subject, post) against('ошибк* проблем*' in boolean mod
 + '+' означает  что слово обязатеьно должно быть в результате
 
 + '-' означает что слово не должно быть в результате
-### Примеры:
+## Примеры:
 
 + 'apple banana'
 
@@ -717,6 +719,7 @@ Select * from products
 where match (name) against (' -mango жилет джинсы' in boolean mode)
 ~~~
 # Вспомогательные функции 
+(Все функции, http://www.rldp.ru/mysql/mysql80/funct.htm )
 ## Математческие функции ( https://dev.mysql.com/doc/refman/8.0/en/mathematical-functions.html )
 ## Round (7.1)
 Округляет цифру до x знаков после запятой, в данном случае двух. Если нет цифры то до челого значения
@@ -736,7 +739,7 @@ Select name,round (rating,2) as rounded_raiting from films
 ## Floor (7.4)
 Опускает цифру до "пола"(до ближнего целого чиса в меньшую сторону).  Если comments = 8.9 то выдаст 8
 ~~~
-Select id,comments,cloor(count) as pages from posts
+Select id,comments,floor(count) as pages from posts
 ~~~ 
 ## Ceiling (7.5)
 Поднимает цифру до  "потолка"(до ближнего целого чиса в большую сторону). Если comments = 8.1 то выдаст 9
@@ -753,7 +756,11 @@ Select id,abs (temperature) as temperature from experiments
 ~~~
 pow(x,y)
 ~~~
-## Строковые функции ( http://www.mysql.ru/docs/man/String_functions.html )
+
+# Группировка данных 
+(Все функции, http://www.rldp.ru/mysql/mysql80/funct.htm )
+## Строковые функции 
+( http://www.mysql.ru/docs/man/String_functions.html )
 ## lenght (7.8)
 Возвращает количество байт строки
 ~~~
@@ -857,6 +864,57 @@ mysql> SELECT TRIM(TRAILING 'xyz' FROM 'barxxyz');
 ## ltrim
 ## rtrim
 удаляют пробелы слева и справа соответственно.
+## Substring (7.)
+Данная функция поддерживает многобайтные величины.
+~~~
+SUBSTRING(str,pos,len)
+SUBSTRING(str FROM pos FOR len)
+MID(str,pos,len)
+~~~
+Возвращает подстроку длиной len символов из строки str, начиная от позиции pos. Существует форма с оператором FROM, для которой используется синтаксис ANSI SQL92:
+~~~
+mysql> SELECT SUBSTRING('Quadratically',5,6);
+-> 'ratica'
+~~~
+Данная функция поддерживает многобайтные величины.
+~~~
+SUBSTRING(str,pos)
+SUBSTRING(str FROM pos)
+~~~
+Возвращает подстроку из строки str, начиная с позиции pos:
+~~~
+mysql> SELECT SUBSTRING('Quadratically',5);
+-> 'ratically'
+
+mysql> SELECT SUBSTRING('foobarbar' FROM 4);
+        -> 'barbar'
+~~~
+## Substrig_index (7.)
+Данная функция поддерживает многобайтные величины.
+~~~
+SUBSTRING(str,pos)
+SUBSTRING(str FROM pos)
+~~~
+Возвращает подстроку из строки str, начиная с позиции pos:
+~~~
+mysql> SELECT SUBSTRING('Quadratically',5);
+        -> 'ratically'
+
+mysql> SELECT SUBSTRING('foobarbar' FROM 4);
+        -> 'barbar'
+~~~
+Данная функция поддерживает многобайтные величины.
+~~~
+SUBSTRING_INDEX(str,delim,count)
+~~~
+Возвращает подстроку из строки str перед появлениям count вхождений разделителя delim. Если count положителен, то возвращается все, что находится слева от последнего разделителя (считая слева). Если count отрицателен, то возвращается все, что находится справа от последнего разделителя (считая справа):
+~~~
+mysql> SELECT SUBSTRING_INDEX('www.mysql.com', '.', 2);
+        -> 'www.mysql'
+
+mysql> SELECT SUBSTRING_INDEX('www.mysql.com', '.', -2);
+        -> 'mysql.com'
+~~~
 ## функции даты ( https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html )
 ## year (7.18)
 Выбирает/Возвращает год из даты
@@ -896,7 +954,7 @@ set visit_date = visit_date + interval 90 minute
 select * , dateformat(date + 3 hour,'%d.%m.%Y %H:%i')
 ~~~
 выведет дату + 3 часа в формате  ДД.ММ.ГГГГ ЧЧ:ММ
-## Dateformat (7.23)
+## Date_format (7.23)
 придает дате нужный вид, например вид  ДД.ММ.ГГГГ ЧЧ:ММ придается:
 ~~~
 date_format(date,'%d.%m.%Y %H:%i') as date
@@ -921,11 +979,727 @@ where dayname(birthday) in ('Sunday','Saturday') order by birthday desc
 mysql> SELECT TIMESTAMPADD(MINUTE,1,'2003-01-02');
         -> '2003-01-02 00:01:00'
 ~~~
-## timpestampadd (7.24)
-## timpestampadd (7.24)
-## timpestampadd (7.24)
-## timpestampadd (7.24)
-## timpestampadd (7.24)
+## convert_tz (7.24)
+Переоводит заданное время 'date' из своего часового пояса 'gmt'  в тот который следует 'Europe/Moscow'.
+
+~~~
+elect user_id, date_format(Convert_tz(date,'gmt','Europe/Moscow'),'%d.%m.%Y %H:%i') as visit_date from visits
+~~~
+Можно также передставлять часовые пояса как : 'gmt' = '+00:00', 'Europe/Moscow' = '+03:00' ;
+~~~
+elect user_id, date_format(Convert_tz(date,'+00:00','+03:00'),'%d.%m.%Y %H:%i') as visit_date from visits
+~~~
+~~~
++---------+------------------+
+| user_id | visit_date       |
++---------+------------------+
+| 1       | 21.06.2017 14:35 |
+| 5       | 21.06.2017 15:12 |
+| 145     | 21.06.2017 18:43 |
+| 147     | 22.06.2017 13:01 |
+| 276     | 22.06.2017 15:00 |
+| 18      | 22.06.2017 15:04 |
+| 7       | 22.06.2017 15:59 |
+| 1873    | 22.06.2017 16:00 |
+| 18      | 22.06.2017 16:00 |
+| 87      | 23.06.2017 02:12 |
+| 147     | 24.06.2017 14:35 |
+| 91      | 24.06.2017 14:35 |
+| 971     | 24.06.2017 15:50 |
+| 1355    | 22.07.2017 14:44 |
+| 987     | 22.07.2017 15:15 |
+| 34      | 22.07.2017 17:00 |
++---------+------------------+
+~~~
+## Группировка данных ( https://dev.mysql.com/doc/refman/5.7/en/aggregate-functions.html#function_min )
+Агрегированные данные неьзя выводить с другими данными таблицы
+## min(8.1)
+Выводит минимальное значене
+~~~
+Select (date_format(min(date),'%d.%m.%Y')) as date from orders
+where status = 'cancelled';
+-> 04.01.2015
+~~~
+## max (8.2)
+Выводит максимальное значение.
+~~~
+Select max(amount)as max_losses from orders
+where status = 'cancelled';
+-> 8700
+~~~
+## round (8.3)
+Округляет функцию или цифру до количства знаков после запятой (2)
+~~~
+Select round(avg(amount),2) avg_check from orders
+where status ='success' and year(date) = 2015
+-> 1889.63
+~~~
+## count (8.4)
+Посчитает все записи по колонке sex, где sex= 'w' и вораст больше 30. Стоит отметить что если бы не было условий where, то функция count посчитала бы все не NULL колонки. NULL колонки функция не считает, все остальные да, даже ' ' и ''.
+~~~
+Select count(sex) as women from users
+where sex='w' and age<30
+-> 3
+~~~
+Здесь видно что он считает всех у кого activity_date не позже 2018-04-08 12:31:17
+~~~
+Select count(activity_date) as users from users
+where activity_date>=('2018-04-08 12:36:17'- interval 5 minute) 
+-> 6
+~~~
+## sum (8.5)
+Суммирует все записи по полю которое указанно. В данном случае будет суммировать amount из таблицы orders, другие поля этих записей должны соответствовать условиям where
+~~~
+Select sum(amount) as income from orders
+where status = 'success' and month(date)=01 and year(date)=2015
+-> 2450
+~~~
+Можно суммировать не только amount но и amount к которому применяются определенные мат. действия 
+~~~
+Select round(sum(amount*0.06)) as tax from transactions
+where date between '2017-01-01 23:59:59' and '2017-03-31 23:59:59' and no_tax='0' and direction = 'in'
+-> 473
+~~~
+## avg (8.6)
+Считате среднее значение.
+~~~
+select floor(avg(age)) as age, count(sex) as count from clients 
+where sex = 'm'
+->
++-----+-------+
+| age | count |
++-----+-------+
+| 24  | 9     |
++-----+-------+
+~~~
+## abs (8.7)
+Выводт абсолютное значение числа(без знака), агрегированного числа или функции
+~~~
+round(avg(abs(diff)))
+~~~
+Берет абсолютные числа от diff(Беззнаковое) от diff, потом берет среднее от них же и потом округляет до целого
+## Group by(8.8)
+группирует все столбцы по категориям. Т.е все товары у которых category id = 1 будут помещены в одну категроию.
+Следовательно их сумма будет браться тоже по категориям
+В следующем запросе мы группируем по возрасту - все люди одного возраста помещенны в одну группу, и если мы напишем count (*) - посчет всех записей по всем  не NULL полям, то получим разбивку сотрудников по категориям.
+~~~
+select age, count(*) as clients from users
+group by 
+age
+order by age desc
+~~~
+Вывод:
+~~~
++-----+---------+
+| age | clients |
++-----+---------+
+| 30  | 3       |
+| 29  | 2       |
+| 23  | 1       |
+| 22  | 1       |
+| 21  | 2       |
+| 18  | 1       |
+| 17  | 2       |
+| 16  | 1       |
+| 15  | 1       |
++-----+---------+
+~~~
+Можно группировать сразу по нескольким полям. В таком случае будет разнича между январем 2014 и 2015. Если мы сгруппируем просто  по меяцам, то месяц с индесом 1 будет считаться как один и тот же независимо от месца 
+~~~
+Select year(date)as year, month(date) as month, sum(amount) as income, count(date) as orders from orders
+where status = 'success'
+group by year(date), month(date) 
+order by year(date), month(date) 
+~~~
+Вывод:
+~~~
++------+-------+--------+--------+
+| year | month | income | orders |
++------+-------+--------+--------+
+| 2014 | 1     | 4500   | 1      |
+| 2014 | 2     | 1400   | 1      |
+| 2014 | 3     | 700    | 1      |
+| 2014 | 12    | 1240   | 1      |
+| 2015 | 1     | 2450   | 3      |
+| 2015 | 2     | 680    | 1      |
+| 2015 | 3     | 8000   | 1      |
+| 2015 | 4     | 2580   | 2      |
++------+-------+--------+--------+
+~~~
+## having и where
+## having (8.9)
+Оперирует в таблице агрегированных данных. Тех которые уже были сгруппированы. Where же ищет именно в исходной таблице (deals).  Т.е. запрос найдет всех пользователей у которых три и больше закрытых сделок (deals) при этом поля deals в таблице deals нет, мы его агрегировали (sum(status ='closed')as deals).
+~~~
+Select user_id, sum(status ='closed')as deals, sum(amount)as sum_amount, max(amount) as max_amount from deals
+where status = 'closed'
+group by user_id
+having deals>=3
+->
++---------+-------+------------+------------+
+| user_id | deals | sum_amount | max_amount |
++---------+-------+------------+------------+
+| 1       | 3     | 114500     | 78000      |
+| 3       | 4     | 295350     | 210000     |
++---------+-------+------------+------------+
+~~~
+Без условия having он выведет всех юзеров (понятно что все транзакции которые у них суммированы, были со статусом closed). 
+~~~
+Select user_id, sum(status ='closed')as deals, sum(amount)as sum_amount, max(amount) as max_amount from deals
+where status = 'closed'
+group by user_id
+->
++---------+-------+------------+------------+
+| user_id | deals | sum_amount | max_amount |
++---------+-------+------------+------------+
+| 1       | 3     | 114500     | 78000      |
+| 2       | 2     | 137000     | 75000      |
+| 3       | 4     | 295350     | 210000     |
+| 4       | 2     | 42100      | 35300      |
++---------+-------+------------+------------+
+~~~
+# 9 Многотабичные запросы
+## union (9.1)
+объединяет  таблицы при запросе
+~~~
+Select * from bank_transactions 
+union
+Select * from cashbox_transactions
+->
++----+-----------+---------------------+---------+
+| id | client_id | date                | amount  |
++----+-----------+---------------------+---------+
+| 1  | 12        | 2017-02-01 11:35:17 | 560.00  |
+| 2  | 56        | 2017-02-03 15:43:18 | 3000.00 |
+| 3  | 124       | 2017-02-14 12:12:02 | 1400.50 |
+| 1  | 56        | 2017-02-04 10:12:09 | 74.00   |
+| 2  | 451       | 2017-02-10 22:12:04 | 871.00  |
+| 3  | 98        | 2017-02-16 09:00:30 | 1000.00 |
++----+-----------+---------------------+---------+
+~~~
+
+Если в таблице представленны разные  
+Типы данных в столбцах должны быть совместимыми (например текст и текст,время и время). Если они не совместимы, то запрос пройдет, однако смысл таблицы потеряется. Совместимые типы преобразовываются в более общие (21.09.2015типа date -> 21.09.2015 00:00:00 типа datetime)
+## cast (9.2) (http://www.mysql.ru/docs/man/Cast_Functions.html)
+Представляет какое либо выражение в нужном нам типе. Меняя тип
+Функция CAST имеет следующий синтаксис:
+~~~
+CAST(expression AS type)
+или
+CONVERT(expression,type)
+~~~
+где аргумент type представляет один из типов:
+
+BINARY
+DATE
+DATETIME
+SIGNED {INTEGER}
+TIME
+UNSIGNED {INTEGER}
+~~~
+Select cast(right(number,2) as unsigned)as region from autos
+~~~
+Берет две цифры с права у столбца number, и запиcывает их int usigned в поле region
+## order by limit и union (9.3)
+Можно сортировать данные как и в одельном запросе, так и в таблице которая получлась после всех Select'ов. Разные Select'ы необходмо обернуь в скобки
+Например:
+
+Чтобы взять две самые популярные игры из каждого жанра составляем запрос по каждому жанру 
+~~~ 
+where category_id = (1,2, и т.д)
+~~~
+А затем сортируем в этом жанре рейтинг от большего к меньшему и выбираем только два первых результата
+~~~
+order by rating desc limit 2
+~~~
+Для сортировки получившис значений по рейтингу и id пишем oredr by вне скобок, после всех Select'ов.
+~~~
+order by rating  desc, id 
+~~~
+Весь запрос:
+~~~
+(Select  id, name, rating, 'Action'as genre from games
+where category_id = 1
+order by rating desc limit 2 )
+union
+(Select  id, name, rating, 'RPG'as genre from games
+where category_id = 2
+order by rating desc limit 2)
+union
+(Select  id, name, rating, 'Adventure'as genre from games
+where category_id = 3
+order by rating desc limit 2)
+union
+(Select  id, name, rating, 'Strategy'as genre from games
+where category_id = 4
+order by rating desc limit 2)
+union
+(Select  id, name, rating, 'Shooter'as genre from games
+where category_id = 5
+order by rating desc limit 2)
+order by rating  desc, id 
+->
++----+---------------------------------+--------+-----------+
+| id | name                            | rating | genre     |
++----+---------------------------------+--------+-----------+
+| 1  | The Witcher 3: Wild Hunt        | 9.61   | RPG       |
+| 4  | The Last of Us                  | 9.45   | Adventure |
+| 14 | Uncharted 4: A Thief's End      | 9.33   | Adventure |
+| 19 | Warcraft III: Reign of Chaos    | 9.29   | Strategy  |
+| 16 | Metro: Last Light               | 9.25   | Shooter   |
+| 9  | Diablo III                      | 9.22   | RPG       |
+| 6  | Grand Theft Auto V              | 9.18   | Action    |
+| 2  | Warcraft III: The Frozen Throne | 9.00   | Strategy  |
+| 17 | Outlast                         | 9.00   | Action    |
+| 12 | Doom                            | 8.75   | Shooter   |
++----+---------------------------------+--------+-----------+
+~~~ 
+##  Group by и union (9.4)
+Групировка происходит по уже склееным таблицам, ее также стот писать после внешнего select запроса.
+~~~
+Select year(date)as year, month(date)as month, sum(amount) as month_amount from 
+(Select * from bank_transactions
+union
+Select * from cashbox_transactions
+union
+Select * from paypal_transactions) transactions
+group by year, month
+order by year, month
+->
++------+-------+--------------+
+| year | month | month_amount |
++------+-------+--------------+
+| 2017 | 2     | 2124.00      |
+| 2017 | 3     | 3000.00      |
+| 2017 | 4     | 4672.00      |
+| 2018 | 1     | 4050.24      |
+| 2018 | 2     | 1000.00      |
++------+-------+--------------+
+~~~
+## отношение один к одному (9.5) !!
+Когда первичные ключи в таблцах совпадают
+
+## Delete on cascade (9.6) (https://www.mysqltutorial.org/mysql-on-delete-cascade/)
+Удаляет данные из доченрних таблиц связанные с основной таблицой при удалении из основной.
+~~~
+CREATE TABLE buildings (
+    building_no INT PRIMARY KEY AUTO_INCREMENT,
+    building_name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL
+);
+CREATE TABLE rooms (
+    room_no INT PRIMARY KEY AUTO_INCREMENT,
+    room_name VARCHAR(255) NOT NULL,
+    building_no INT NOT NULL,
+    FOREIGN KEY (building_no)
+        REFERENCES buildings (building_no)
+        ON DELETE CASCADE
+);
+~~~
+Создаем две таблицы buildings и rooms. Во втором запросе создвем внешний ключ между  rooms(building_no) и buildings (building_no), а строчка ON DELETE CASCADE оозначает что если мы удалим запись из buildings, где buildings_no=2 то все комнаты в таблице room удалятся
+
+![](2021-09-28-16-33-37.png)
+~~~
+INSERT INTO rooms(room_name,building_no)
+VALUES('Amazon',1),
+      ('War Room',1),
+      ('Office of CEO',1),
+      ('Marketing',2),
+      ('Showroom',2);
+      SELECT * FROM rooms;
+~~~
+![](2021-09-28-18-33-55.png)
+
+Удалим все сведеня о втором здании из таблицы buildings.
+~~~
+DELETE FROM buildings 
+WHERE building_no = 2;
+SELECT * FROM rooms;
+~~~
+![](2021-09-28-18-35-38.png)
+
+Как мы видим, в таблице rooms остались только комнаты из первого здания
+
+## froeign key (9.7)
+При созании таблицы связывает поле из создаваемой таблицы с полем из уже сущестующей
+~~~
+Create table users_data (
+id int unsigned not null primary key auto_increment,
+bio text,
+Foreign key (id) references users(user_id)
+)
+~~~
+В данном случае связываются поля id из таблицы users_data, и поле users_id из таблицы users 
+## last_insert_id (9.8)
+![](2021-09-28-20-22-52.png)
+Позволяет нам обращаться к id последней записи котрая была в insert. Это нужно так как иногда очередь при добавлении сдвигается, и id есть auto_increment. Допустим в таблице 7 записей с id = (1-7). Мы добавляем новую запись, но запрс не проходит, меняем запрос, он проходит и у нас появляется запись c id = 9, т.к id=8 заня в памяти,но там находтся пустая запись. Если бы мы после неудавшегося запроса записали бы в поле id 
+~~~
+values(last_insert_id,...)
+~~~
+То вставилась бы запись с id=8   
+##  uique key и primary key (9.9) (https://www.w3schools.com/sql/sql_unique.asp) (https://html5css.ru/sql/sql_primarykey.php)
+PRIMARY Key — уникальная идентификация каждой строки/записи в таблице базы данных.
+UNIQUE Constraint — все значения в столбце должны быть разными.
+Primary key по дефолту содержит unique Constraint
+Однако! в таблице может быть много unique key, но только один unique
+MySQL
+~~~
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    UNIQUE (ID)
+);
+~~~
+SQL Server / Oracle / MS Access
+~~~
+CREATE TABLE Persons (
+    ID int NOT NULL PRIMARY KEY,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int
+);
+~~~
+MySQL
+~~~
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    PRIMARY KEY (ID)
+);
+~~~
+SQL Server / Oracle / MS Access:
+~~~
+CREATE TABLE Persons (
+    ID int NOT NULL PRIMARY KEY,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int
+);
+~~~
+## Один ко многим (9.10) !!
+Когда на одну запись в таблице может приходиться несколько записей в другой
+
+##  Создание свзей один ко многим (9.11)
+##  on deleate set null (9.12)
+![](2021-10-03-12-49-53.png)
+Допустим мы удаляем пользователя из users,все посты которые были связвны с поьзователем через foreign key получат в поле user_id - NULL
+## alter table (9.13)
+В данном случае нужен чтобы изменять таблицу.
+Пример:
+В базе данных есть две таблицы: genres и artists. В первой находится список жанров, а во второй — исполнители. Сейчас таблицы никак не связаны между собой.
+Создайте в таблице artists новое поле genre_id и сделайте его внешним ключом на поле id в таблице genres.
+
+Исходные запросы для создания таблиц были такие:
+~~~
+CREATE TABLE genres (
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NULL
+);
+CREATE TABLE artists (
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NULL,
+    is_group BOOLEAN NULL
+);
+~~~
+
+~~~
+Alter table artists 
+
+(вносим изменения в таблицу artists)
+
+add column genre_id int unsigned, 
+
+(создаем поле genre_id с таким же типом данных как и у id в таблице genres)
+
+add foreign key (genre_id) references genres(id)
+(Создаем внешний ключ от поля genre_id (в той табице коорую мы редактируем) привязанный к id в таблице genres)
+
+
+~~~
+## foreign key (9.14)
+Создает ключ ссылающийся на поле другой таблицы
+~~~
+Alter table products
+add foreign key (category_id) references categories(id)
+~~~
+в данном случае поле category_id таблицы products теперь ссылается  на поле id таблицы categories
+## join on (9.15)
+## inner join
+или просто join
+Оператор SQL INNER JOIN формирует таблицу из записей двух или нескольких таблиц. Каждая строка из первой (левой) таблицы, сопоставляется с каждой строкой из второй (правой) таблицы, после чего происходит проверка условия. Если условие истинно, то строки попадают в результирующую таблицу. В результирующей таблице строки формируются конкатенацией строк первой и второй таблиц.
+Синтаксис:
+Условие для сравнения задается в операторе ON.
+~~~
+SELECT
+    column_names [,... n]
+FROM
+    Table_1 INNER JOIN Table_2
+ON condition
+~~~
+
+![](2021-10-10-12-58-38.png)
+Пример 1. Используя оператор SQL INNER JOIN вывести на экран, какими авторами были написаны какие из книг:
+~~~
+SELECT *
+FROM Authors INNER JOIN Books
+ON Authors.AuthorID = Books.BookID
+~~~
+В данном запросе оператора SQL INNER JOIN условие сравнения — это равенство полей AuthorID и BookID. В результирующую таблицу не попадет книга под названием Programming in Scala, так как значение ее BookID не найдет равенства ни с одной строкой AuthorID.
+
+Результирующая таблица будет выглядеть следующим образом:
+![](2021-10-10-13-18-06.png)
+В общем inner join можно представить так:
+![](2021-10-09-19-28-53.png)
+Он вкючает только те записи которые строго соответствуют условию.
+
+
+## left outer join(9.16)
+Можно также писать "left join"- Значит одно и тоже
+
+
+Для данного оператора важен порядок таблиц. Например
+~~~
+from users 
+Left outer join posts
+
+и
+
+from posts
+Left outer join users
+
+это не одно и тоже
+~~~
+В первом случае users будет левой таблицей, а posts правой.
+Во втором случае наоборот 
+
+Алгоритм работы:
+1.Сначала происходит формирование таблицы внутренним соединением (оператор SQL INNER JOIN) левой и правой таблиц
+
+2.Затем, в результат добавляются записи левой таблицы не вошедшие в результат формирования таблицы внутренним соединением. Для них, соответствующие записи из правой таблицы заполняются значениями NULL.
+
+Пример
+~~~
+Select * from users 
+Left outer join posts
+on users.id = post.users_id
+~~~
+Результат: Все авторы постов с постами и все авторы постов без постов (id=2,id=4)
+![](2021-10-10-14-29-13.png)
+Схематичное представление:
+![](2021-10-09-19-32-19.png)
+Условно: берутся все записи из обоих таблиц соответсвующие условию после 'on' (например users.id = post.users_id) и все записи из 'левой' таблицы у которой поле из условия on(users.id) = null. Тоесть всех пользователей которые  не оставили коментарий.
+
+Если нужно найти всех пользователей кторые не оставили комментарий: 
+~~~
+Select * from users 
+Left outer join posts
+on users.id = post.users_id
+where post.id is null
+~~~
+
+Данный запрос выбирает всех пользователей из табицы users у которых в графе post.id стоит null (из id ниразу не встречается в таблице posts)
+
+Схематичное представление:
+![](2021-10-09-19-33-47.png)
+
+
+## right outer join(9.17)
+Смотри раздел про left outer join (9.16)
+Тут все тоже самое только мы берем правую таблицу вмесо левой
+
+~~~
+Select * from users 
+Right outer join posts
+on users.id = post.users_id
+~~~
+Получим все посты с авторами и все посты без автора. В случае с left join : (Все авторы постов с постами и все авторы постов)
+
+![](2021-10-09-19-35-20.png)
+
+Если нужно найти все посты  без авторов: 
+~~~
+Select * from users 
+Right outer join posts
+on users.id = post.users_id
+where post.id is null
+~~~
+Схематичное представление:
+![](2021-10-09-19-37-16.png)
+##  full outer join (9.17)
+(не поддерживается mysql)
+Но его можно сделать с помощью "left join union right join"
+~~~
+Select * from users
+left join posts 
+on posts.user_id = users.id
+union
+Select * from users
+right join posts 
+on posts.user_id = users.id
+~~~
+Выводит данные всех пользователей и всех постов.
+
+Тк union не дублирует одинаковые записи, все запросы будут уникальны
+![](2021-10-10-18-54-34.png)
+Схематически:
+![](2021-10-10-18-55-42.png)
+
+##  выборка из трех и более таблиц (9.18)
+!! ?? это доработать И прочитать как работет join многих таблиц (9.11.7)
+ВНИМАНИЕ в конструкции:
+~~~
+Select x.*, y.*, z.*
+from x
+left join y on y.Y = x.X_id
+left join z on y.Y_id = z.Z
+~~~
+Мы джоиним ту таблицу которую пишем после left join (y,z) И! ту, переменная которой(X_id,Z) у нас еще содержится в условии рядом со знаками равно (Табицы x,z), при этом: та таблца которая не стоит после джоина должна быть объявленна в другом join до этого или в from.
+
+## Ссылочная целостность  (9.19)
+Свойство БД когда нет сылок на несуществующие записи
+
+On deleate (Cascade,set null,restrict)
+on update
+## Отношения многие ко многим (9.20)
+![](2021-10-22-17-14-03.png)
+
+
+# Вложенные запросы
+##  Простые вложенные запросы (10.1)
+Запросы которе пользуются результатами другого запроса
+~~~
+select * from users where id in(
+    Select user_id from orders where status = 'completed' and amount =(
+        Select max(amount)from orders where status = 'completed'
+        )
+    )
+order by id
+~~~
+Сначала находится максимальное значение заказа со статусом completed. Запрос уровнем выше выбирает id пользователей заказов  опять же со статусом completed.
+Запросы выполняются независимо, поэтому в каждом нужно прописывать условие, даже если оно одинаковое.
+И в треьем запросе выводится вся информация о пользователях (информация о них в другой таблице)
+Результат:
+~~~
++----+------------+-----------+-----+
+| id | first_name | last_name | age |
++----+------------+-----------+-----+
+| 3  | Елена      | Абрамова  | 18  |
+| 10 | Юлия       | Фёдорова  | 25  |
++----+------------+-----------+-----+
+~~~
+
+## IN ANY ALL
+##  (10.2)
+IN проверяет есть ли значения которе в скобках после комманды IN в таблице.
+NOT IN проверяет что есть все те кто не в скобках после комманды IN в таблице.
+ANY сравнивает значения со всеми значениями в скобках, и если любая запись удовлетвроряет запросу, то она выводится
+~~~
+Select name, price from products where category_id = 9 and price > any(
+    Select price from products where category_id = 3
+    )
+order by name
+~~~
+All сравнивает со всеми
+~~~
+Select name, count from  products where category_id = 3 and count < all (
+Select count from products where category_id = 9
+)
+order by count
+~~~
+Distinct убирает повторяющиеся результаты из запроса
+![](2022-02-10-22-22-48.png)
+
+## exists (10.3)
+При использовании EXISTS перебираются данные из внешнего запроса и на каждую строку выполняется внутренний. На самом деле, EXISTS будет преобразован внутри MySQL к JOIN.
+Тоесть имеются ли записи существует таблица указнная в подзапросе
+~~~
+Select id, name from categories where exists(
+    Select * from products where products.category = categories.id and count > 0
+)
+order by name
+~~~
+##  (10.4) Запросы, возвращающие несколько столбцов
+
+~~~
+Select products.id, products.name, products.price from products
+join old_prices on old_prices.product_id=products.id
+where (products.id,products.price) not in (
+    Select product_id,price from old_prices
+);
+
+Select * from products
+where (products.id,products.price) not in (
+    Select product_id,price from old_prices
+);
+ Select product_id,price from old_prices
+~~~
+
+##  (10.5) Подзапросы в конструкции From
+Идет выборка из двух таблиц, сначала производится запрос из исходной таблицы, потом этому результтту присваивается имя  выборука идет уже из полученной таблицы.
+~~~
+Select * from 
+    (Select * from 
+        (Select * from (
+            (Select id,name,rating, "Action" as genre from games where category_id = 1 order by rating desc limit 2)
+            union
+            (Select id,name,rating, "RPG" as genre from games where category_id = 2 order by rating desc limit 2)
+            union
+            (Select id,name,rating, "Adventure" as genre from games where category_id = 3 order by rating desc limit 2)
+            union
+            (Select id,name,rating, "Strategy" as genre from games where category_id = 4 order by rating desc limit 2)
+            union
+            (Select id,name,rating, "Shooter" as genre from games where category_id = 5 order by rating desc limit 2)) as ten_games
+        order by rating desc limit 5) 
+    as five_games) 
+as curent order by rating 
+~~~
+
+~~~
+Select * from(
+    Select date, amount, type as payment_type from(
+        (Select *,'bank' as type from bank_transactions)
+        union
+        (Select *,'cash' as cashbox from cashbox_transactions)
+        union
+        (Select *,'paypal' as type from paypal_transactions)
+    )as all_t
+    order by date desc limit 3
+)as three
+order by date
+~~~
+
+~~~
+Select distinct last_name, first_name, sex from(
+    select last_names.last_name, first_names.first_name, first_names.sex from first_names
+    join last_names on last_names.sex = first_names.sex)as tablet
+order by sex, last_name,first_name
+~~~
+##  (10.6) Подзапросы в ккнструкции insert
+
+## replace 
+Заменяет всю таблицу на результат подзапроса в скобках.
+Replace - это аналог update + insert (или merge). Jн делает UPDATE для существующих и INSERT для новых
+~~~
+replace into cached_cars(
+    select cars.id, concat (marks.name,' ' ,models.name,', ',cars.color), cars.price as car from cars
+    join models on cars.model_id = models.id
+    join marks on models.mark_id = marks.id )
+
+~~~
+## ignore
+Заменяет записи в таблице  closed_advs на результат подзапроса в скобках.
+Ignore - игнорирует записи коорые уже находятся в таблице closed_advs
+~~~
+insert ignore into closed_advs (
+Select  id, user_id, category_id, text, date from advs
+    where closed = 1
+)
+~~~
+##  (10.7)
+##  (10.8)
 
 
 
@@ -938,15 +1712,21 @@ mysql> SELECT TIMESTAMPADD(MINUTE,1,'2003-01-02');
 
 
 
+## 9.11(3) выдает марку null
 
-
-
-
-
-
-
-
-
+Select marks.name as mark, sum(cars.price) as sum
+from marks
+right join models on models.mark_id = marks.id
+right join cars on cars.model_id = models.mark_id
+group by marks.name
+order by mark;
+## using
+win+ shift+ s- аналог share x
+win+ v - просмотр буфера обмена
+## xml 
+## json
+## unique index
+## Constraint
 ## определение остатка
 Данный знак (%) находит статок при изменении или ыборке из таблицы
 ~~~
@@ -1005,7 +1785,7 @@ SHOW CREATE TABLE products;
 ## constraint
 ## Инексы и индексирование
 
-## Order by и group  by
+## Order by и group by
 ## set, update, values, в чем отличия?
 
 ## Truncate и Delete, различия
@@ -1042,3 +1822,4 @@ DELETE активирует триггеры
 
 DELETE - команда DML
 
+pandoc- перевод из marcdown в latex и обратно.
